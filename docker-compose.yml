@@ -1,0 +1,15 @@
+services:
+  golang_app:
+    build:
+      context: .
+      dockerfile: ./docker/golang_app.Dockerfile  # Use the Dockerfile to build the Golang app
+    container_name: golang-app
+    ports:
+      - ${SERVER_PORT}:${SERVER_PORT}
+      - ${DEBUG_PORT}:2345
+    environment:
+      SERVER_PORT: "${SERVER_PORT}"
+      DEBUG_PORT: "${DEBUG_PORT}"
+    volumes:
+      - .:/golang_app  
+
