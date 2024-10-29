@@ -17,5 +17,4 @@ func NewDatabase(logger framework.Logger) *Database {
 	}
 
 	return &Database{DB: db}
-
 }
