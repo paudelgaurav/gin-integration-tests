@@ -16,5 +16,8 @@ func NewDatabase(logger framework.Logger) *Database {
 		logger.Panic(err)
 	}
 
+	// Enable foreign key constraints in SQLite
+	db.Exec("PRAGMA foreign_keys = ON;")
+
 	return &Database{DB: db}
 }

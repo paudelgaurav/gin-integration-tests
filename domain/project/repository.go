@@ -14,5 +14,9 @@ func NewProjectRepository(db *infrastructure.Database) *ProjectRepository {
 }
 
 func (r *ProjectRepository) GetAllProjects() (projects []models.Project, err error) {
-	return projects, r.Find(&projects).Error
+	return projects, r.Preload("ProjectCategory").Find(&projects).Error
+}
+
+func (r *ProjectRepository) IsProjectCateogoryValid(id uint) (exists bool, err error) {
+	return exists, r.Model(&models.ProjectCategory{}).Select("count(*) > 0 ").Where("id = ?", id).Find(&exists).Error
 }

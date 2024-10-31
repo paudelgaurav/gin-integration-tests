@@ -23,6 +23,16 @@ func (h *ProjectHandler) CreateProject(c *gin.Context) {
 		return
 	}
 
+	// check validity of project category id
+	valid, err := h.service.IsProjectCateogoryValid(req.ProjectCategoryID)
+	if err != nil {
+		response.InternalServerError(c, err.Error())
+	}
+	if !valid {
+		response.ValidationError(c, "invalid category id ")
+		return
+	}
+
 	project, err := h.service.CreateProject(req)
 	if err != nil {
 		response.InternalServerError(c, err.Error())

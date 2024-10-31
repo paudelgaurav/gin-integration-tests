@@ -2,6 +2,7 @@ package tests
 
 import (
 	"github.com/glebarez/sqlite"
+	"github.com/paudelgaurav/gin-boilerplate/domain/models"
 	"github.com/paudelgaurav/gin-boilerplate/pkg/infrastructure"
 	"gorm.io/gorm"
 )
@@ -12,5 +13,21 @@ func NewTestDatabase() *infrastructure.Database {
 		panic(err)
 	}
 
-	return &infrastructure.Database{db}
+	// Enable foreign key constraints in SQLite
+	db.Exec("PRAGMA foreign_keys = ON;")
+
+	migrate(db)
+
+	return &infrastructure.Database{DB: db}
+}
+
+func migrate(db *gorm.DB) {
+	if err := db.AutoMigrate(&models.ProjectCategory{}); err != nil {
+		panic(err)
+	}
+
+	if err := db.AutoMigrate(&models.Project{}); err != nil {
+		panic(err)
+	}
+
 }

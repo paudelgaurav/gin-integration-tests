@@ -18,8 +18,9 @@ func NewProjectService(repo *ProjectRepository) *ProjectService {
 func (s *ProjectService) CreateProject(projectRequest CreateProjectRequest) (*models.Project, error) {
 
 	project := &models.Project{
-		Name:     projectRequest.Name,
-		Endpoint: projectRequest.Endpoint,
+		Name:              projectRequest.Name,
+		Endpoint:          projectRequest.Endpoint,
+		ProjectCategoryID: projectRequest.ProjectCategoryID,
 	}
 
 	if err := s.repo.Create(project).Error; err != nil {
@@ -47,4 +48,8 @@ func (s *ProjectService) PingProjects(projects []models.Project) {
 
 	}
 
+}
+
+func (s *ProjectService) IsProjectCateogoryValid(id uint) (bool, error) {
+	return s.repo.IsProjectCateogoryValid(id)
 }
