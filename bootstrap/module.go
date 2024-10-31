@@ -1,8 +1,8 @@
 package bootstrap
 
 import (
-	"github.com/paudelgaurav/gin-boilerplate/domain"
-	"github.com/paudelgaurav/gin-boilerplate/pkg"
+	"github.com/paudelgaurav/gin-integration-tests/domain"
+	"github.com/paudelgaurav/gin-integration-tests/pkg"
 	"go.uber.org/fx"
 )
 

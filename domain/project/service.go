@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/paudelgaurav/gin-boilerplate/domain/models"
+	"github.com/paudelgaurav/gin-integration-tests/domain/models"
 )
 
 type ProjectService struct {

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/response"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/response"
 )
 
 type ProjectHandler struct {

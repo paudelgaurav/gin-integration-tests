@@ -1,4 +1,4 @@
-module github.com/paudelgaurav/gin-boilerplate
+module github.com/paudelgaurav/gin-integration-tests
 
 go 1.23.2
 

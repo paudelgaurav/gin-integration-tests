@@ -2,8 +2,8 @@ package tests
 
 import (
 	"github.com/glebarez/sqlite"
-	"github.com/paudelgaurav/gin-boilerplate/domain/models"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/infrastructure"
+	"github.com/paudelgaurav/gin-integration-tests/domain/models"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/infrastructure"
 	"gorm.io/gorm"
 )
 

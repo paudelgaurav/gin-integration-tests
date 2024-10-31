@@ -13,3 +13,4 @@ serviceAccountKey.json
 data.db
 data_test.db
 .env.test
+tmp

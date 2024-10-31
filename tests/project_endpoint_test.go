@@ -5,10 +5,10 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/paudelgaurav/gin-boilerplate/domain/models"
-	"github.com/paudelgaurav/gin-boilerplate/domain/project"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/infrastructure"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/utils"
+	"github.com/paudelgaurav/gin-integration-tests/domain/models"
+	"github.com/paudelgaurav/gin-integration-tests/domain/project"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/infrastructure"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/utils"
 )
 
 func TestPing(t *testing.T) {
@@ -19,14 +19,14 @@ func TestPing(t *testing.T) {
 			Name:           "create",
 			Method:         http.MethodPost,
 			Url:            "/api/v1/projects",
-			BodyFunc:       getCreateData,
+			PrepareBody:    getCreateData,
 			ExpectedStatus: 201,
 		},
 		{
 			Name:           "invalid create",
 			Method:         http.MethodPost,
 			Url:            "/api/v1/projects",
-			BodyFunc:       getInvalidCreateData,
+			PrepareBody:    getInvalidCreateData,
 			ExpectedStatus: 400,
 		},
 		{

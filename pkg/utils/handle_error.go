@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/framework"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/framework"
 )
 
 func HandleValidationError(c *gin.Context, logger framework.Logger, obj any, err error) {

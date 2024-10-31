@@ -2,7 +2,7 @@ package infrastructure
 
 import (
 	"github.com/glebarez/sqlite"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/framework"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/framework"
 	"gorm.io/gorm"
 )
 

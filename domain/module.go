@@ -1,7 +1,7 @@
 package domain
 
 import (
-	"github.com/paudelgaurav/gin-boilerplate/domain/project"
+	"github.com/paudelgaurav/gin-integration-tests/domain/project"
 	"go.uber.org/fx"
 )
 

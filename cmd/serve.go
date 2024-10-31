@@ -3,9 +3,9 @@ package cmd
 import (
 	"context"
 
-	"github.com/paudelgaurav/gin-boilerplate/bootstrap"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/framework"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/infrastructure"
+	"github.com/paudelgaurav/gin-integration-tests/bootstrap"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/framework"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/infrastructure"
 	"go.uber.org/fx"
 )
 

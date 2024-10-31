@@ -13,8 +13,8 @@ while true; do
     while read -r directory events filename; do
         echo "[run.sh] Change detected in $directory$filename - Event: $events"
         echo "[run.sh] Stopping process id: $PID"
-        kill -15 $PID  # Gracefully stop the process
-        pkill -f __debug_bin  # Ensure the process is fully stopped
-        break  # Exit the loop to restart Delve
+        kill -15 $PID  
+        pkill -f __debug_bin  
+        break
     done
 done

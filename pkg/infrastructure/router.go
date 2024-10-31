@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/framework"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/framework"
 )
 
 // Router -> Gin Router

@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/joho/godotenv"
-	"github.com/paudelgaurav/gin-boilerplate/bootstrap"
-	"github.com/paudelgaurav/gin-boilerplate/pkg/infrastructure"
+	"github.com/paudelgaurav/gin-integration-tests/bootstrap"
+	"github.com/paudelgaurav/gin-integration-tests/pkg/infrastructure"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxtest"
@@ -24,11 +24,11 @@ import (
 */
 
 type ApiTestScenario struct {
-	Name     string
-	Method   string
-	Url      string
-	Body     io.Reader
-	BodyFunc func(db *infrastructure.Database) io.Reader
+	Name        string
+	Method      string
+	Url         string
+	Body        io.Reader
+	PrepareBody func(db *infrastructure.Database) io.Reader
 
 	//expectations
 	// ----------
@@ -38,8 +38,8 @@ type ApiTestScenario struct {
 func (scenario *ApiTestScenario) getBody(db *infrastructure.Database) io.Reader {
 	if scenario.Body != nil {
 		return scenario.Body
-	} else if scenario.BodyFunc != nil {
-		return scenario.BodyFunc(db)
+	} else if scenario.PrepareBody != nil {
+		return scenario.PrepareBody(db)
 	}
 
 	return nil
