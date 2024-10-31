@@ -11,4 +11,5 @@ __debug_bin
 serviceAccountKey.json
 .test.env
 data.db
+data_test.db
 .env.test
