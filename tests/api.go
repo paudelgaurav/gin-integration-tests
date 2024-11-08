@@ -15,13 +15,6 @@ import (
 	"go.uber.org/fx/fxtest"
 )
 
-/*
-1. How to replace dependency in go-fx ? Solved by decorate
-2. How to read .env file and create test database in runner ? Replace env (Test database is created but need to use test env)
-3. How to handle authentication in runner ? (Need to think how can we bypass the authentication)
-4. How can I pass ID in the data while testing post endpoints ? (fixed by using bodyFunc)
-5. Assert Response body along with status code
-*/
 
 type ApiTestScenario struct {
 	Name        string
