@@ -49,7 +49,3 @@ func (s *ProjectService) PingProjects(projects []models.Project) {
 	}
 
 }
-
-func (s *ProjectService) IsProjectCateogoryValid(id uint) (bool, error) {
-	return s.repo.IsProjectCateogoryValid(id)
-}

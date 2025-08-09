@@ -15,7 +15,6 @@ import (
 	"go.uber.org/fx/fxtest"
 )
 
-
 type ApiTestScenario struct {
 	Name        string
 	Method      string
