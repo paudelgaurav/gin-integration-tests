@@ -1,7 +1,6 @@
 package tests
 
 import (
-	"io"
 	"net/http"
 	"strings"
 	"testing"
