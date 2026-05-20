@@ -1,75 +1,65 @@
 package tests
 
 import (
-	"io"
 	"net/http"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/paudelgaurav/gin-integration-tests/domain/models"
-	"github.com/paudelgaurav/gin-integration-tests/domain/project"
-	"github.com/paudelgaurav/gin-integration-tests/pkg/infrastructure"
-	"github.com/paudelgaurav/gin-integration-tests/pkg/utils"
+	"github.com/paudelgaurav/gin-integration-tests/tests/factories"
 )
 
-func TestPing(t *testing.T) {
+func TestCreateProject(t *testing.T) {
 	t.Parallel()
+	s := NewSuite(t)
 
-	testCases := []ApiTestScenario{
-		{
-			Name:           "create",
-			Method:         http.MethodPost,
-			Url:            "/api/v1/projects",
-			PrepareBody:    getCreateData,
-			ExpectedStatus: 201,
-		},
-		{
-			Name:           "invalid create",
-			Method:         http.MethodPost,
-			Url:            "/api/v1/projects",
-			PrepareBody:    getInvalidCreateData,
-			ExpectedStatus: 400,
-		},
-		{
-			Name:           "ping",
-			Method:         http.MethodGet,
-			Url:            "/api/v1/projects/ping",
-			ExpectedStatus: 200,
-		},
-	}
+	category := factories.ProjectCategory.Create(t, s.DB)
 
-	for _, testCase := range testCases {
-		testCase.Test(t)
-	}
+	s.Client.POST("/api/v1/projects").
+		JSON(gin.H{
+			"name":                "Gaurav Paudel",
+			"endpoint":            "https://github.com/paudelgaurav",
+			"project_category_id": category.ID,
+		}).
+		Send().
+		Status(http.StatusCreated).
+		JSONPath("data.Name").Equals("Gaurav Paudel").
+		JSONPath("data.ID").NotEmpty()
 
+	s.AssertCount(&models.Project{}, 1)
 }
 
-func getCreateData(db *infrastructure.Database) io.Reader {
+func TestCreateProject_InvalidCategory(t *testing.T) {
+	t.Parallel()
+	s := NewSuite(t)
 
-	projectCategory := models.ProjectCategory{
-		Name: "Unit testing",
-	}
+	s.Client.POST("/api/v1/projects").
+		JSON(gin.H{
+			"name":                "Invalid Project",
+			"endpoint":            "https://example.com",
+			"project_category_id": 12222,
+		}).
+		Send().
+		Status(http.StatusBadRequest)
 
-	if err := db.Create(&projectCategory).Error; err != nil {
-		panic(err)
-	}
-
-	body := project.CreateProjectRequest{
-		Name:              "Gaurav Paudel",
-		Endpoint:          "https://github.com/paudelgaurav",
-		ProjectCategoryID: projectCategory.ID,
-	}
-
-	return utils.StructToReader(&body)
-
+	s.AssertCount(&models.Project{}, 0)
 }
 
-func getInvalidCreateData(db *infrastructure.Database) io.Reader {
-	body := project.CreateProjectRequest{
-		Name:              "Invalid Project",
-		Endpoint:          "https://github.com/paudelgaurav",
-		ProjectCategoryID: 12222,
-	}
+func TestPingProjects(t *testing.T) {
+	t.Parallel()
+	s := NewSuite(t)
 
-	return utils.StructToReader(&body)
+	// Seed two projects; the handler kicks off outbound pings asynchronously
+	// (go h.service.PingProjects), so we register stubs to keep them silent.
+	category := factories.ProjectCategory.Create(t, s.DB)
+	factories.Project.CreateN(t, s.DB, 2, func(p *models.Project) {
+		p.ProjectCategoryID = category.ID
+	})
 
+	s.HTTP.OnGet("=~^https://example.com/").Reply(200).Empty()
+
+	s.Client.GET("/api/v1/projects/ping").
+		Send().
+		Status(http.StatusOK).
+		JSONPath("data").Len(2)
 }
