@@ -11,11 +11,11 @@ import "encoding/base64"
 // "no user / unauthenticated" without branching at the call site.
 func (c *Client) AsUser(user any) *Client {
 	c.suite.T.Helper()
-	if c.suite.cfg.authProvider == nil {
+	if c.suite.authProvider == nil {
 		c.suite.T.Fatalf("gintest: AsUser called but no auth provider configured; use gintest.WithAuthProvider")
 	}
 	cp := c.Clone()
-	name, value := c.suite.cfg.authProvider(user)
+	name, value := c.suite.authProvider(user)
 	if name != "" {
 		cp.headers.Set(name, value)
 	}

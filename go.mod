@@ -5,9 +5,7 @@ go 1.23.2
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/glebarez/sqlite v1.11.0
-	github.com/go-playground/validator/v10 v10.22.1
 	github.com/jarcoal/httpmock v1.4.1
-	github.com/joho/godotenv v1.5.1
 	github.com/spf13/viper v1.19.0
 	github.com/tidwall/gjson v1.19.0
 	go.uber.org/fx v1.23.0
@@ -16,6 +14,7 @@ require (
 )
 
 require (
+	github.com/go-playground/validator/v10 v10.22.1 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 )
