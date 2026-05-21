@@ -57,10 +57,35 @@ func WithMigrations(fn func(*gorm.DB) error) Option {
 // into the application's DB type so fx can inject it. For example, if your
 // app uses *infrastructure.Database{*gorm.DB}, pass a wrapper that constructs
 // one from the supplied tx.
+//
+// Use this when your DB wrapper only depends on *gorm.DB and can be built
+// from scratch outside its own package. If the wrapper has unexported fields
+// (logger, env, …) that must be preserved, use WithDBDecoratorFunc instead.
 func WithDBDecorator[T any](wrap func(tx *gorm.DB) T) Option {
 	return func(c *config) {
 		c.dbDecorator = func(tx *gorm.DB) fx.Option {
 			return fx.Decorate(func(_ T) T { return wrap(tx) })
+		}
+	}
+}
+
+// WithDBDecoratorFunc is the flexible form of WithDBDecorator. The wrap
+// callback receives both the transactional *gorm.DB *and* the original
+// instance fx built, so it can preserve fields it cannot otherwise reach
+// (typically unexported state set by the production constructor).
+//
+// Typical usage when the DB wrapper has private fields:
+//
+//	gintest.WithDBDecoratorFunc(func(tx *gorm.DB, orig *infrastructure.Database) *infrastructure.Database {
+//	    orig.DB = tx // swap embedded *gorm.DB, keep logger/env
+//	    return orig
+//	})
+//
+// Mutating `orig` is safe because fx constructs one instance per test app.
+func WithDBDecoratorFunc[T any](wrap func(tx *gorm.DB, orig T) T) Option {
+	return func(c *config) {
+		c.dbDecorator = func(tx *gorm.DB) fx.Option {
+			return fx.Decorate(func(orig T) T { return wrap(tx, orig) })
 		}
 	}
 }

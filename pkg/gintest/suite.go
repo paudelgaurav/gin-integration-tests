@@ -28,6 +28,7 @@ package gintest
 
 import (
 	"context"
+	"sync"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -35,6 +36,13 @@ import (
 	"go.uber.org/fx/fxtest"
 	"gorm.io/gorm"
 )
+
+// setupMu serializes fx app construction across parallel suites. Many real
+// apps initialise package-globals during fx construction (viper, zap, jwk
+// caches, etc.) that are not concurrency-safe. After Start() returns, tests
+// run independently, so this only adds tens of milliseconds of contention
+// per parallel test — well worth the loss of "first-run flake".
+var setupMu sync.Mutex
 
 // Suite is the per-test harness. It exposes the running Gin engine, the
 // transactional DB, an HTTP client, and an outbound HTTP mock. All resources
@@ -107,8 +115,10 @@ func New(t *testing.T, opts ...Option) *Suite {
 		fxOpts = append(fxOpts, fx.NopLogger)
 	}
 
+	setupMu.Lock()
 	s.app = fxtest.New(t, fxOpts...)
 	s.app.RequireStart()
+	setupMu.Unlock()
 
 	t.Cleanup(func() {
 		s.app.RequireStop()

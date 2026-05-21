@@ -279,7 +279,8 @@ s.Client.WithBasicAuth("alice", "hunter2").GET("/admin").Send()
 - `WithFxOptions(opts ...fx.Option)` — extra options/overrides for the test graph.
 - `WithDBOpener(func() (*gorm.DB, error))` — override the base DB (default: isolated in-memory SQLite).
 - `WithMigrations(func(*gorm.DB) error)` — run before the per-test transaction begins.
-- `WithDBDecorator[T any](func(*gorm.DB) T)` — wrap the tx DB into your app's DB type.
+- `WithDBDecorator[T any](func(*gorm.DB) T)` — wrap the tx DB into your app's DB type (for simple wrappers built from `*gorm.DB` alone).
+- `WithDBDecoratorFunc[T any](func(*gorm.DB, T) T)` — same idea, but the callback also receives the original instance fx built. Use this when your DB wrapper has unexported fields (logger, env, …) that you need to preserve.
 - `WithEngineFrom[T any](func(T) *gin.Engine)` — tell the library where the engine lives.
 - `WithAuthProvider(func(any) (name, value string))` — drives `Client.AsUser`.
 - `WithSilentFxLogs()` — suppress fx lifecycle logging.
