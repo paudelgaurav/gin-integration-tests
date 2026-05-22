@@ -120,8 +120,14 @@ func New(t *testing.T, opts ...Option) *Suite {
 	t.Cleanup(func() {
 		s.app.RequireStop()
 		_ = tx.Rollback()
-		if sqlDB, err := baseDB.DB(); err == nil {
-			_ = sqlDB.Close()
+		// Only close the base DB when we opened it ourselves. A
+		// user-supplied opener (typically pointing at a long-lived
+		// testcontainer shared across many tests) is borrowed — closing it
+		// would break every subsequent test in the run.
+		if !cfg.openDBSupplied {
+			if sqlDB, err := baseDB.DB(); err == nil {
+				_ = sqlDB.Close()
+			}
 		}
 		s.HTTP.deactivate()
 	})
