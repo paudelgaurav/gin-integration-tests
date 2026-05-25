@@ -13,6 +13,7 @@ type config struct {
 	modules         []fx.Option
 	extraOptions    []fx.Option
 	openDB          func() (*gorm.DB, error)
+	openDBSupplied  bool
 	migrate         func(*gorm.DB) error
 	dbDecorator     func(tx *gorm.DB) fx.Option
 	engineExtractor func(target **gin.Engine) fx.Option
@@ -37,11 +38,15 @@ func WithFxOptions(opts ...fx.Option) Option {
 }
 
 // WithDBOpener overrides how the underlying base DB is created. By default,
-// the suite opens an isolated in-memory SQLite database. Use this to point
-// tests at a Postgres or MySQL instance (e.g. via testcontainers).
+// the suite opens an isolated in-memory SQLite database which it owns and
+// closes on cleanup. When you supply your own opener (e.g. one that hands
+// back a shared *gorm.DB pointed at a testcontainer), the suite treats the
+// returned DB as borrowed and does NOT close it on cleanup — only the
+// per-test transaction is rolled back.
 func WithDBOpener(open func() (*gorm.DB, error)) Option {
 	return func(c *config) {
 		c.openDB = open
+		c.openDBSupplied = true
 	}
 }
 

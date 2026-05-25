@@ -63,10 +63,6 @@ func (f *Factory[T]) CreateN(t TestingT, db *gorm.DB, n int, overrides ...Overri
 	return out
 }
 
-// Set is a convenience wrapper that converts an in-place mutator into an
-// Override. Mostly cosmetic — `func(p *models.Project) { ... }` already works.
-func Set[T any](fn func(*T)) Override[T] { return fn }
-
 // TestingT is the subset of *testing.T the factory uses. Defined as an
 // interface so tests can pass mocks if they want.
 type TestingT interface {

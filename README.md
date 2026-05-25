@@ -2,9 +2,11 @@
 
 `pkg/gintest` is a small testing harness that turns multi-page boilerplate
 into ten-line integration tests, the way Django's `TestCase` + DRF's
-`APIClient` do for Python apps. This repo is the example app it was built
-against — `pkg/gintest` is the library; everything under `domain/`, `cmd/`,
-and `bootstrap/` is the demo target.
+`APIClient` do for Python apps. This repo contains the library plus a
+minimal Gin + GORM + fx fixture under `domain/`, `bootstrap/`, and
+`pkg/{framework,infrastructure,response}/` that the library's own tests
+exercise — copy the [tests/setup.go](tests/setup.go) shape into your
+own project to adopt it.
 
 ## Install
 

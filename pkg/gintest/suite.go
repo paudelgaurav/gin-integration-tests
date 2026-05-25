@@ -27,7 +27,6 @@
 package gintest
 
 import (
-	"context"
 	"sync"
 	"testing"
 
@@ -54,9 +53,8 @@ type Suite struct {
 	Client *Client
 	HTTP   *HTTPMock
 
-	cfg *config
-	app *fxtest.App
-	tx  *gorm.DB
+	authProvider func(any) (string, string)
+	app          *fxtest.App
 }
 
 // New constructs a Suite. It opens a base DB, runs migrations, begins a
@@ -89,10 +87,9 @@ func New(t *testing.T, opts ...Option) *Suite {
 	}
 
 	s := &Suite{
-		T:   t,
-		DB:  tx,
-		tx:  tx,
-		cfg: cfg,
+		T:            t,
+		DB:           tx,
+		authProvider: cfg.authProvider,
 	}
 	s.HTTP = newHTTPMock(t)
 	s.Client = newClient(s)
@@ -123,16 +120,17 @@ func New(t *testing.T, opts ...Option) *Suite {
 	t.Cleanup(func() {
 		s.app.RequireStop()
 		_ = tx.Rollback()
-		if sqlDB, err := baseDB.DB(); err == nil {
-			_ = sqlDB.Close()
+		// Only close the base DB when we opened it ourselves. A
+		// user-supplied opener (typically pointing at a long-lived
+		// testcontainer shared across many tests) is borrowed — closing it
+		// would break every subsequent test in the run.
+		if !cfg.openDBSupplied {
+			if sqlDB, err := baseDB.DB(); err == nil {
+				_ = sqlDB.Close()
+			}
 		}
 		s.HTTP.deactivate()
 	})
 
 	return s
-}
-
-// Context returns a fresh background context. A convenience for tests.
-func (s *Suite) Context() context.Context {
-	return context.Background()
 }
